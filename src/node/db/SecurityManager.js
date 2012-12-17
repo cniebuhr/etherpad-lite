@@ -126,21 +126,29 @@ exports.checkAccess = function (padID, sessionCookie, token, password, callback)
           async.forEach(sessionIDs, function(sessionID, callback) {
             sessionManager.getSessionInfo(sessionID, function(err, sessionInfo) {
               //skip session if it doesn't exist
-              if(err && err.message == "sessionID does not exist")
+              if(err && err.message == "sessionID does not exist") {
                 callback();
+                return;
+              }
               
-              if(ERR(err, callback)) 
+              if(ERR(err, callback)) {
                 callback();
+                return;
+              }
               
               var now = Math.floor(new Date().getTime()/1000);
               
               //is it for this group?
-              if(sessionInfo.groupID != groupID)
+              if(sessionInfo.groupID != groupID) {
                 callback();
+                return;
+              }
               
               //is validUntil still ok?
-              if(sessionInfo.validUntil <= now)
+              if(sessionInfo.validUntil <= now) {
                 callback();
+                return;
+              }
               
               // There is a valid session
               validSession = true;
